@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Snake Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,6 +12,14 @@
   <div class="scoreboard">
     <p id="score">Score: 0</p>
     <p id="highScore">High Score: 0</p>
+  </div>
+  <div class="touch-controls" aria-label="Touch controls">
+    <button class="control-btn up" data-dir="UP" aria-label="Move up">▲</button>
+    <div class="control-row">
+      <button class="control-btn left" data-dir="LEFT" aria-label="Move left">◀</button>
+      <button class="control-btn down" data-dir="DOWN" aria-label="Move down">▼</button>
+      <button class="control-btn right" data-dir="RIGHT" aria-label="Move right">▶</button>
+    </div>
   </div>
   <button id="retryBtn" class="retry-btn" style="display:none;">
     <span>▶</span> Play Again

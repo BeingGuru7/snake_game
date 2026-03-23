@@ -18,6 +18,7 @@ canvas {
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   margin-top: 20px;
+  touch-action: none;
 }
 
 .scoreboard {
@@ -48,4 +49,68 @@ canvas {
 .retry-btn:hover {
   background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
   transform: scale(1.05);
+}
+
+.touch-controls {
+  display: block;
+  margin: 12px auto 0;
+  width: fit-content;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.control-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.control-btn {
+  width: 68px;
+  height: 68px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  touch-action: manipulation;
+}
+
+.control-btn:active {
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.control-btn.up {
+  display: block;
+  margin: 0 auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .touch-controls {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    margin-top: 18px;
+    font-size: 2em;
+  }
+
+  .scoreboard {
+    gap: 20px;
+    font-size: 1.05em;
+  }
+}
+
+@media (max-width: 480px) {
+  .control-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
 }

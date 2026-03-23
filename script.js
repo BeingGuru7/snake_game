@@ -1,6 +1,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const retryBtn = document.getElementById("retryBtn");
+const touchButtons = document.querySelectorAll(".control-btn");
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || ("ontouchstart" in window);
 
 let box = 20; // grid size
 let gridWidth, gridHeight;
@@ -24,11 +26,26 @@ function initGame() {
   game = setInterval(draw, 100);
 }
 
+function setDirection(nextDirection) {
+  if (nextDirection === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+  else if (nextDirection === "UP" && direction !== "DOWN") direction = "UP";
+  else if (nextDirection === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+  else if (nextDirection === "DOWN" && direction !== "UP") direction = "DOWN";
+}
+
 document.addEventListener("keydown", event => {
-  if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-  else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-  else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-  else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+  if (event.key === "ArrowLeft") setDirection("LEFT");
+  else if (event.key === "ArrowUp") setDirection("UP");
+  else if (event.key === "ArrowRight") setDirection("RIGHT");
+  else if (event.key === "ArrowDown") setDirection("DOWN");
+});
+
+touchButtons.forEach(btn => {
+  btn.addEventListener("click", () => setDirection(btn.dataset.dir));
+  btn.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    setDirection(btn.dataset.dir);
+  }, { passive: false });
 });
 
 // Retry button click
@@ -40,7 +57,7 @@ function draw() {
   if (!direction) {
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
-    const startMsg = "Press an arrow key to start";
+    const startMsg = isTouchDevice ? "Swipe or use touch buttons to start" : "Swipe or use arrows to start";
     const startTextWidth = ctx.measureText(startMsg).width;
     ctx.fillText(startMsg, (canvas.width - startTextWidth) / 2, canvas.height / 2);
     return;
