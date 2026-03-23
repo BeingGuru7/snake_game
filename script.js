@@ -2,6 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const retryBtn = document.getElementById("retryBtn");
 const touchButtons = document.querySelectorAll(".control-btn");
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || ("ontouchstart" in window);
 
 let box = 20; // grid size
 let gridWidth, gridHeight;
@@ -59,6 +60,10 @@ canvas.addEventListener("touchstart", function(e) {
   touchStartY = touch.clientY;
 }, { passive: false });
 
+canvas.addEventListener("touchmove", function(e) {
+  e.preventDefault();
+}, { passive: false });
+
 canvas.addEventListener("touchend", function(e) {
   e.preventDefault();
   const touch = e.changedTouches[0];
@@ -82,7 +87,7 @@ function draw() {
   if (!direction) {
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
-    const startMsg = "Swipe or use arrows to start";
+    const startMsg = isTouchDevice ? "Swipe or use touch buttons to start" : "Swipe or use arrows to start";
     const startTextWidth = ctx.measureText(startMsg).width;
     ctx.fillText(startMsg, (canvas.width - startTextWidth) / 2, canvas.height / 2);
     return;
