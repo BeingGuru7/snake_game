@@ -1,6 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const retryBtn = document.getElementById("retryBtn");
+const touchButtons = document.querySelectorAll(".control-btn");
 
 let box = 20; // grid size
 let gridWidth, gridHeight;
@@ -24,11 +25,26 @@ function initGame() {
   game = setInterval(draw, 100);
 }
 
+function setDirection(nextDirection) {
+  if (nextDirection === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+  else if (nextDirection === "UP" && direction !== "DOWN") direction = "UP";
+  else if (nextDirection === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+  else if (nextDirection === "DOWN" && direction !== "UP") direction = "DOWN";
+}
+
 document.addEventListener("keydown", event => {
-  if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-  else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-  else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-  else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+  if (event.key === "ArrowLeft") setDirection("LEFT");
+  else if (event.key === "ArrowUp") setDirection("UP");
+  else if (event.key === "ArrowRight") setDirection("RIGHT");
+  else if (event.key === "ArrowDown") setDirection("DOWN");
+});
+
+touchButtons.forEach(btn => {
+  btn.addEventListener("click", () => setDirection(btn.dataset.dir));
+  btn.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    setDirection(btn.dataset.dir);
+  }, { passive: false });
 });
 
 // Retry button click
@@ -37,26 +53,28 @@ retryBtn.addEventListener("click", initGame);
 let touchStartX = 0, touchStartY = 0;
 
 canvas.addEventListener("touchstart", function(e) {
+  e.preventDefault();
   const touch = e.touches[0];
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
-});
+}, { passive: false });
 
 canvas.addEventListener("touchend", function(e) {
+  e.preventDefault();
   const touch = e.changedTouches[0];
   const dx = touch.clientX - touchStartX;
   const dy = touch.clientY - touchStartY;
 
+  if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+
   if (Math.abs(dx) > Math.abs(dy)) {
-    // Horizontal swipe
-    if (dx > 30 && direction !== "LEFT") direction = "RIGHT";
-    else if (dx < -30 && direction !== "RIGHT") direction = "LEFT";
+    if (dx > 0) setDirection("RIGHT");
+    else setDirection("LEFT");
   } else {
-    // Vertical swipe
-    if (dy > 30 && direction !== "UP") direction = "DOWN";
-    else if (dy < -30 && direction !== "DOWN") direction = "UP";
+    if (dy > 0) setDirection("DOWN");
+    else setDirection("UP");
   }
-});
+}, { passive: false });
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -64,7 +82,7 @@ function draw() {
   if (!direction) {
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
-    const startMsg = "Press an arrow key to start";
+    const startMsg = "Swipe or use arrows to start";
     const startTextWidth = ctx.measureText(startMsg).width;
     ctx.fillText(startMsg, (canvas.width - startTextWidth) / 2, canvas.height / 2);
     return;
